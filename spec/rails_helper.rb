@@ -35,7 +35,7 @@ rescue ActiveRecord::PendingMigrationError => e
 end
 RSpec.configure do |config|
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
-  config.fixture_path = "#{::Rails.root}/spec/fixtures"
+  config.fixture_paths = ["#{::Rails.root}/spec/fixtures"]
 
   config.include ActiveSupport::Testing::TimeHelpers
   config.include FactoryBot::Syntax::Methods
@@ -65,10 +65,12 @@ RSpec.configure do |config|
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
 
-  # start by truncating all the tables but then use the faster transaction strategy the rest of the time.
+  # start by cleaning all the tables but then use the faster transaction strategy the rest of the time.
   config.before(:suite) do
     DatabaseCleaner.allow_remote_database_url = true
-    DatabaseCleaner.clean_with(:truncation)
+    # Use Rails native approach instead of database_cleaner for initial cleanup
+    # to avoid Rails 7.2 compatibility issues with schema_migration method
+    ActiveRecord::Tasks::DatabaseTasks.truncate_all
     DatabaseCleaner.strategy = :transaction
   end
 
