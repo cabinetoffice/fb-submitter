@@ -1,4 +1,4 @@
-class Submission < ActiveRecord::Base
+class Submission < ApplicationRecord
   has_many :email_payloads, dependent: :destroy
 
   def decrypted_submission

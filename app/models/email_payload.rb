@@ -1,4 +1,4 @@
-class EmailPayload < ActiveRecord::Base
+class EmailPayload < ApplicationRecord
   belongs_to :submission
 
   def decrypted_attachments
